@@ -34,10 +34,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  flutter_markdown: 0.7.1
   google_generative_ai: ^0.4.6  # For Gemini AI integration
   image_picker: ^1.1.2         # For selecting images from the device
   dash_chat_2: ^0.0.21         # For a pre-built chat UI
@@ -46,7 +43,12 @@ dev_dependencies:
   firebase_core: ^2.10.0
   firebase_auth: ^4.6.0
   cloud_firestore: ^4.8.0
-  flutter_markdown: ^0.6.10
+  flutter_markdown_selectionarea: ^0.6.17+1
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
