@@ -1,0 +1,68 @@
+// goes in app
+{
+    "project_info": {
+      "project_number": "79730843699",
+      "project_id": "mockapp-8fd86",
+      "storage_bucket": "mockapp-8fd86.firebasestorage.app"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:79730843699:android:00432e1d3935e7a7d80346",
+          "android_client_info": {
+            "package_name": "com.example.mockapp"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDcNaE934Rx-rBWsGOh81oW2bfKMkPYztA"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      },
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:79730843699:android:cedb9d725de0b5b9d80346",
+          "android_client_info": {
+            "package_name": "com.example.my_first_app"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDcNaE934Rx-rBWsGOh81oW2bfKMkPYztA"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      },
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:79730843699:android:ba17c6c0c7da23efd80346",
+          "android_client_info": {
+            "package_name": "com.example.notif_trial"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDcNaE934Rx-rBWsGOh81oW2bfKMkPYztA"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
