@@ -11,11 +11,10 @@ class LaunchPage extends StatefulWidget {
 class _LaunchPageState extends State<LaunchPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _logoOpacity;
-  late Animation<double> _logoSize;
+  late Animation<double> _titleOpacity;
   late Animation<double> _taglineOpacity;
-  late Animation<double> _backgroundOpacity;
   late Animation<double> _buttonOpacity;
+  late Animation<double> _teamNameOpacity;
 
   Timer? _navigationTimer;
 
@@ -28,18 +27,11 @@ class _LaunchPageState extends State<LaunchPage>
       vsync: this,
     );
 
-    // Logo animations
-    _logoOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+    // Title animation
+    _titleOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
-      ),
-    );
-
-    _logoSize = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
       ),
     );
 
@@ -51,14 +43,6 @@ class _LaunchPageState extends State<LaunchPage>
       ),
     );
 
-    // Background animation
-    _backgroundOpacity = Tween<double>(begin: 0.0, end: 0.3).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-      ),
-    );
-
     // Button animation
     _buttonOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -67,10 +51,18 @@ class _LaunchPageState extends State<LaunchPage>
       ),
     );
 
+    // Team name animation
+    _teamNameOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.8, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
     _controller.forward();
 
-    // Auto-navigate after 3 seconds
-    _navigationTimer = Timer(const Duration(seconds: 3), () {
+    // Auto-navigate after 4 seconds
+    _navigationTimer = Timer(const Duration(seconds: 4), () {
       // Navigate to home page after launch screen
       // Navigator.of(context).pushReplacement(
       //   MaterialPageRoute(builder: (context) => const HomePage()),
@@ -89,102 +81,83 @@ class _LaunchPageState extends State<LaunchPage>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background Image with Ken Burns effect
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Container(
+    // Using MaterialApp.router to enable edge-to-edge display
+    return Material(
+      // Remove default Material white background
+      color: Colors.transparent,
+      child: Container(
+        // Ensure container fills the entire screen
+        width: size.width,
+        height: size.height,
+        child: Stack(
+          fit: StackFit.expand, // Ensure stack fills entire container
+          children: [
+            // Background color in case GIF fails to load
+            Container(
+              color: const Color(0xFF2C9F6B),
+              width: size.width,
+              height: size.height,
+            ),
+
+            // Background GIF with improved visibility
+            SizedBox(
+              width: size.width,
+              height: size.height,
+              child: Image.asset(
+                'assets/launch.gif',
+                fit: BoxFit.cover,
                 width: size.width,
                 height: size.height,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: const AssetImage('assets/launch.gif'),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.4),
-                      BlendMode.darken,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback gradient if GIF fails to load
+                  return Container(
+                    width: size.width,
+                    height: size.height,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF2C9F6B),
+                          Color(0xFF56C596),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            ),
 
-          // Green Gradient Overlay with Animation
-          AnimatedBuilder(
-            animation: _backgroundOpacity,
-            builder: (context, child) {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0xFF2C9F6B)
-                          .withOpacity(_backgroundOpacity.value * 0.8),
-                      const Color(0xFF56C596)
-                          .withOpacity(_backgroundOpacity.value),
-                      const Color(0xFF9BE8AD)
-                          .withOpacity(_backgroundOpacity.value * 0.5),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+            // Subtle color overlay (very light)
+            Container(
+              width: size.width,
+              height: size.height,
+              color: const Color(0xFF2C9F6B).withOpacity(0.15),
+            ),
 
-          // Main Content
-          SafeArea(
-            child: Column(
+            // Main Content - Full width, no padding
+            Column(
               children: [
-                const Spacer(flex: 2),
+                SizedBox(height: MediaQuery.of(context).padding.top + 60),
 
-                // Logo and Name
+                // Title - Top Center
                 AnimatedBuilder(
-                  animation: _controller,
+                  animation: _titleOpacity,
                   builder: (context, child) {
                     return Opacity(
-                      opacity: _logoOpacity.value,
-                      child: Transform.scale(
-                        scale: _logoSize.value,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Logo Icon
-                            Icon(
-                              Icons.spa_outlined,
-                              color: Colors.white,
-                              size: 80,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 6,
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 24),
-
-                            // App Name
-                            Text(
-                              'NutriPal',
-                              style: TextStyle(
-                                fontSize: 48,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    offset: const Offset(0, 2),
-                                    blurRadius: 4,
-                                  ),
-                                ],
-                              ),
+                      opacity: _titleOpacity.value,
+                      child: Text(
+                        'NutriPal',
+                        style: TextStyle(
+                          fontSize: 52,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.5),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
                             ),
                           ],
                         ),
@@ -193,21 +166,107 @@ class _LaunchPageState extends State<LaunchPage>
                   },
                 ),
 
-                // Tagline with Animation
+                // Tagline - Below Title
                 AnimatedBuilder(
                   animation: _taglineOpacity,
                   builder: (context, child) {
                     return Opacity(
                       opacity: _taglineOpacity.value,
+                      child: Text(
+                        'nutrition with intuition',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontStyle: FontStyle.italic,
+                          letterSpacing: 1.5,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.5),
+                              offset: const Offset(0, 1),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const Spacer(),
+
+                // Get Started Button - Bottom Center
+                AnimatedBuilder(
+                  animation: _buttonOpacity,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _buttonOpacity.value,
+                      child: Container(
+                        width: size.width * 0.7,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF2C9F6B),
+                              Color(0xFF56C596),
+                            ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Navigate to home page
+                            // Navigator.of(context).pushReplacement(
+                            //   MaterialPageRoute(builder: (context) => const HomePage()),
+                            // );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size(size.width * 0.7, 56),
+                          ),
+                          child: const Text(
+                            'GET STARTED',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                // Team Name - Below Get Started
+                AnimatedBuilder(
+                  animation: _teamNameOpacity,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _teamNameOpacity.value,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 12),
+                        padding: const EdgeInsets.only(top: 15.0, bottom: 60.0),
                         child: Text(
-                          'nutrition with intuition',
+                          'by SleepDeprivedBlueberries',
                           style: TextStyle(
-                            fontSize: 20,
-                            fontStyle: FontStyle.italic,
-                            letterSpacing: 1.5,
-                            color: const Color(0xFF9BE8AD),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 0.5,
+                            color: Colors.white.withOpacity(0.9),
                             shadows: [
                               Shadow(
                                 color: Colors.black.withOpacity(0.3),
@@ -221,54 +280,10 @@ class _LaunchPageState extends State<LaunchPage>
                     );
                   },
                 ),
-
-                const Spacer(flex: 3),
-
-                // Get Started Button
-                AnimatedBuilder(
-                  animation: _buttonOpacity,
-                  builder: (context, child) {
-                    return Opacity(
-                      opacity: _buttonOpacity.value,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 40),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Navigate to home page
-                            // Navigator.of(context).pushReplacement(
-                            //   MaterialPageRoute(builder: (context) => const HomePage()),
-                            // );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2C9F6B),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 4,
-                            shadowColor: Colors.black.withOpacity(0.3),
-                          ),
-                          child: const Text(
-                            'GET STARTED',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
