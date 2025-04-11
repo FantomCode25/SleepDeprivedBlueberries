@@ -1,0 +1,794 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+// Model classes
+class Meal {
+  final String id;
+  final String title;
+  final String mealType; // breakfast, lunch, dinner
+  final List<String> ingredients;
+  final int calories;
+  final bool isAiSuggested;
+  final bool wasFollowed;
+  
+  Meal({
+    required this.id,
+    required this.title,
+    required this.mealType,
+    required this.ingredients,
+    required this.calories,
+    this.isAiSuggested = false,
+    this.wasFollowed = false,
+  });
+  
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'mealType': mealType,
+      'ingredients': ingredients,
+      'calories': calories,
+      'isAiSuggested': isAiSuggested,
+      'wasFollowed': wasFollowed,
+    };
+  }
+  
+  factory Meal.fromMap(Map<String, dynamic> map) {
+    return Meal(
+      id: map['id'],
+      title: map['title'],
+      mealType: map['mealType'],
+      ingredients: List<String>.from(map['ingredients']),
+      calories: map['calories'],
+      isAiSuggested: map['isAiSuggested'] ?? false,
+      wasFollowed: map['wasFollowed'] ?? false,
+    );
+  }
+  
+  Meal copyWith({
+    String? id,
+    String? title,
+    String? mealType,
+    List<String>? ingredients,
+    int? calories,
+    bool? isAiSuggested,
+    bool? wasFollowed,
+  }) {
+    return Meal(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      mealType: mealType ?? this.mealType,
+      ingredients: ingredients ?? this.ingredients,
+      calories: calories ?? this.calories,
+      isAiSuggested: isAiSuggested ?? this.isAiSuggested,
+      wasFollowed: wasFollowed ?? this.wasFollowed,
+    );
+  }
+}
+
+// Service class to handle meal data
+class MealPlannerService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  
+  // Get meals for a specific date
+  Future<List<Meal>> getMealsForDate(DateTime date) async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return [];
+    
+    final String dateString = DateFormat('yyyy-MM-dd').format(date);
+    
+    try {
+      final snapshot = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('mealPlans')
+        .doc(dateString)
+        .collection('meals')
+        .get();
+        
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+          .map((doc) => Meal.fromMap(doc.data()))
+          .toList();
+      } else {
+        // If no meals exist for this date, generate AI recommendations
+        return await generateAiMealRecommendations(date);
+      }
+    } catch (e) {
+      print('Error fetching meals: $e');
+      return [];
+    }
+  }
+  
+  // Save a meal to Firestore
+  Future<void> saveMeal(DateTime date, Meal meal) async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+    
+    final String dateString = DateFormat('yyyy-MM-dd').format(date);
+    
+    try {
+      await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('mealPlans')
+        .doc(dateString)
+        .collection('meals')
+        .doc(meal.id)
+        .set(meal.toMap());
+    } catch (e) {
+      print('Error saving meal: $e');
+    }
+  }
+  
+  // Update meal's "followed" status
+  Future<void> updateMealFollowedStatus(DateTime date, String mealId, bool wasFollowed) async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+    
+    final String dateString = DateFormat('yyyy-MM-dd').format(date);
+    
+    try {
+      await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('mealPlans')
+        .doc(dateString)
+        .collection('meals')
+        .doc(mealId)
+        .update({'wasFollowed': wasFollowed});
+    } catch (e) {
+      print('Error updating meal status: $e');
+    }
+  }
+  
+  // Generate AI meal recommendations
+  Future<List<Meal>> generateAiMealRecommendations(DateTime date) async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return [];
+    
+    // This is a mock implementation - in a real app, you'd call an AI service
+    await Future.delayed(const Duration(seconds: 1)); // Simulate API delay
+    
+    // Sample AI-generated meals
+    final List<Meal> recommendations = [
+      Meal(
+        id: 'breakfast-${date.millisecondsSinceEpoch}',
+        title: 'Vegetable Omelet',
+        mealType: 'breakfast',
+        ingredients: ['eggs', 'spinach', 'bell peppers', 'onions'],
+        calories: 320,
+        isAiSuggested: true,
+      ),
+      Meal(
+        id: 'lunch-${date.millisecondsSinceEpoch}',
+        title: 'Grilled Chicken Salad',
+        mealType: 'lunch',
+        ingredients: ['chicken breast', 'mixed greens', 'cherry tomatoes', 'cucumber'],
+        calories: 450,
+        isAiSuggested: true,
+      ),
+      Meal(
+        id: 'dinner-${date.millisecondsSinceEpoch}',
+        title: 'Salmon with Quinoa',
+        mealType: 'dinner',
+        ingredients: ['salmon fillet', 'quinoa', 'asparagus', 'lemon'],
+        calories: 580,
+        isAiSuggested: true,
+      ),
+    ];
+    
+    // Save the recommendations to Firestore
+    for (var meal in recommendations) {
+      await saveMeal(date, meal);
+    }
+    
+    return recommendations;
+  }
+}
+
+// // Service class to handle meal data
+// class MealPlannerService {
+//   // final ui = FirebaseAuth.instance.currentUser?.ui;
+//   // final _db = FirebaseFirestore.instance;
+//   // final String uid = FirebaseAuth.instance.currentUser!.ui
+//   // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
+  
+//   // Get meals for a specific date
+//   Future<List<Meal>> getMealsForDate(DateTime date) async {
+
+//     final uid = _auth.currentUser?.uid;
+//     if (uid == null) return [];
+
+
+//     final String dateString = DateFormat('yyyy-MM-dd').format(date);
+    
+//     try {
+//       final snapshot = await _firestore
+//           .collection('mealPlans')
+//           .doc(dateString)
+//           .collection('meals')
+//           .get();
+          
+//       if (snapshot.docs.isNotEmpty) {
+//         return snapshot.docs
+//             .map((doc) => Meal.fromMap(doc.data()))
+//             .toList();
+//       } else {
+//         // If no meals exist for this date, generate AI recommendations
+//         return await generateAiMealRecommendations(date);
+//       }
+//     } catch (e) {
+//       print('Error fetching meals: $e');
+//       return [];
+//     }
+//   }
+  
+//   // Save a meal to Firestore
+//   Future<void> saveMeal(DateTime date, Meal meal) async {
+//     final String dateString = DateFormat('yyyy-MM-dd').format(date);
+    
+//     try {
+//       await _firestore
+//           .collection('mealPlans')
+//           .doc(dateString)
+//           .collection('meals')
+//           .doc(meal.id)
+//           .set(meal.toMap());
+//     } catch (e) {
+//       print('Error saving meal: $e');
+//     }
+//   }
+  
+//   // Update meal's "followed" status
+//   Future<void> updateMealFollowedStatus(DateTime date, String mealId, bool wasFollowed) async {
+//     final String dateString = DateFormat('yyyy-MM-dd').format(date);
+    
+//     try {
+//       await _firestore
+//           .collection('mealPlans')
+//           .doc(dateString)
+//           .collection('meals')
+//           .doc(mealId)
+//           .update({'wasFollowed': wasFollowed});
+//     } catch (e) {
+//       print('Error updating meal status: $e');
+//     }
+//   }
+  
+//   // Generate AI meal recommendations
+//   // This would connect to an AI service in a real app
+//   Future<List<Meal>> generateAiMealRecommendations(DateTime date) async {
+//     // This is a mock implementation - in a real app, you'd call an AI service
+//     await Future.delayed(const Duration(seconds: 1)); // Simulate API delay
+    
+//     // Sample AI-generated meals
+//     final List<Meal> recommendations = [
+//       Meal(
+//         id: 'breakfast-${date.millisecondsSinceEpoch}',
+//         title: 'Vegetable Omelet',
+//         mealType: 'breakfast',
+//         ingredients: ['eggs', 'spinach', 'bell peppers', 'onions'],
+//         calories: 320,
+//         isAiSuggested: true,
+//       ),
+//       Meal(
+//         id: 'lunch-${date.millisecondsSinceEpoch}',
+//         title: 'Grilled Chicken Salad',
+//         mealType: 'lunch',
+//         ingredients: ['chicken breast', 'mixed greens', 'cherry tomatoes', 'cucumber'],
+//         calories: 450,
+//         isAiSuggested: true,
+//       ),
+//       Meal(
+//         id: 'dinner-${date.millisecondsSinceEpoch}',
+//         title: 'Salmon with Quinoa',
+//         mealType: 'dinner',
+//         ingredients: ['salmon fillet', 'quinoa', 'asparagus', 'lemon'],
+//         calories: 580,
+//         isAiSuggested: true,
+//       ),
+//     ];
+    
+//     // Save the recommendations to Firestore
+//     for (var meal in recommendations) {
+//       await saveMeal(date, meal);
+//     }
+    
+//     return recommendations;
+//   }
+// }
+
+// Main Meal Planner Screen
+class MealPlannerScreen extends StatefulWidget {
+  const MealPlannerScreen({super.key});
+
+  @override
+  State<MealPlannerScreen> createState() => _MealPlannerScreenState();
+}
+
+class _MealPlannerScreenState extends State<MealPlannerScreen> {
+  final MealPlannerService _mealService = MealPlannerService();
+  DateTime _selectedDate = DateTime.now();
+  List<Meal> _meals = [];
+  bool _isLoading = true;
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadMealsForSelectedDate();
+  }
+  
+  Future<void> _loadMealsForSelectedDate() async {
+    setState(() {
+      _isLoading = true;
+    });
+    
+    final meals = await _mealService.getMealsForDate(_selectedDate);
+    
+    setState(() {
+      _meals = meals;
+      _isLoading = false;
+    });
+  }
+  
+  void _selectDate(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+    });
+    _loadMealsForSelectedDate();
+  }
+  
+  Future<void> _toggleMealFollowed(Meal meal) async {
+    final updatedMeal = meal.copyWith(wasFollowed: !meal.wasFollowed);
+    
+    // Update in UI immediately for responsiveness
+    setState(() {
+      _meals = _meals.map((m) => m.id == meal.id ? updatedMeal : m).toList();
+    });
+    
+    // Save to Firestore
+    await _mealService.updateMealFollowedStatus(_selectedDate, meal.id, updatedMeal.wasFollowed);
+  }
+  
+  void _addOrEditMeal(Meal? existingMeal, String mealType) async {
+    final Meal? result = await showDialog<Meal>(
+      context: context,
+      builder: (context) => MealEditorDialog(meal: existingMeal, mealType: mealType),
+    );
+    
+    if (result != null) {
+      // Save to Firestore
+      await _mealService.saveMeal(_selectedDate, result);
+      // Reload meals
+      _loadMealsForSelectedDate();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Meal Planner'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () {
+              // Handle profile button press
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Date navigation
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    _selectDate(_selectedDate.subtract(const Duration(days: 1)));
+                  },
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                    const SizedBox(width: 4),
+                    Text(
+                      DateFormat('MMMM d').format(_selectedDate),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: () {
+                    _selectDate(_selectedDate.add(const Duration(days: 1)));
+                  },
+                ),
+              ],
+            ),
+          ),
+          
+          // Week day selector
+          SizedBox(
+            height: 80,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 7,
+              itemBuilder: (context, index) {
+                final date = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).add(Duration(days: index));
+                final isSelected = date.day == _selectedDate.day && 
+                                  date.month == _selectedDate.month && 
+                                  date.year == _selectedDate.year;
+                
+                return GestureDetector(
+                  onTap: () => _selectDate(date),
+                  child: Container(
+                    width: 50,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.green[100] : Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          DateFormat('E').format(date).substring(0, 3),
+                          style: TextStyle(
+                            color: isSelected ? Colors.green : Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: isSelected ? Colors.green : Colors.transparent,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          
+          // Meal list title
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Meals for ${DateFormat('MMMM d').format(_selectedDate)}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          
+          // Meal lists
+          Expanded(
+            child: _isLoading 
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildMealTypeSection('Breakfast', 'breakfast'),
+                      _buildMealTypeSection('Lunch', 'lunch'),
+                      _buildMealTypeSection('Dinner', 'dinner'),
+                    ],
+                  ),
+                ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Generate new AI recommendations
+          _loadMealsForSelectedDate();
+        },
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.refresh),
+        tooltip: 'Regenerate meal suggestions',
+      ),
+    );
+  }
+  
+  Widget _buildMealTypeSection(String title, String mealType) {
+    final mealsOfType = _meals.where((meal) => meal.mealType == mealType.toLowerCase()).toList();
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        if (mealsOfType.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const Text('No meals added'),
+                TextButton.icon(
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text('Add ${mealType.toLowerCase()}'),
+                  onPressed: () => _addOrEditMeal(null, mealType.toLowerCase()),
+                ),
+              ],
+            ),
+          )
+        else
+          ...mealsOfType.map((meal) => _buildMealCard(meal)),
+      ],
+    );
+  }
+  
+  Widget _buildMealCard(Meal meal) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        meal.title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (meal.isAiSuggested)
+                        Container(
+                          margin: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.auto_awesome, size: 12, color: Colors.green[700]),
+                              const SizedBox(width: 2),
+                              Text(
+                                'AI Suggested',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.green[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Text(
+                  '${meal.calories} kcal',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              meal.ingredients.join(', '),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Checkbox for tracking followed meals
+                GestureDetector(
+                  onTap: () => _toggleMealFollowed(meal),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          value: meal.wasFollowed,
+                          onChanged: (_) => _toggleMealFollowed(meal),
+                          activeColor: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Followed',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Edit button
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined, size: 20),
+                  onPressed: () => _addOrEditMeal(meal, meal.mealType),
+                  color: Colors.grey[700],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Dialog for adding or editing meals
+class MealEditorDialog extends StatefulWidget {
+  final Meal? meal;
+  final String mealType;
+  
+  const MealEditorDialog({
+    super.key,
+    this.meal,
+    required this.mealType,
+  });
+
+  @override
+  State<MealEditorDialog> createState() => _MealEditorDialogState();
+}
+
+class _MealEditorDialogState extends State<MealEditorDialog> {
+  late TextEditingController _titleController;
+  late TextEditingController _ingredientsController;
+  late TextEditingController _caloriesController;
+  bool _isAiSuggestion = false;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    _titleController = TextEditingController(text: widget.meal?.title ?? '');
+    _ingredientsController = TextEditingController(
+      text: widget.meal?.ingredients.join(', ') ?? '',
+    );
+    _caloriesController = TextEditingController(
+      text: widget.meal?.calories.toString() ?? '',
+    );
+    _isAiSuggestion = widget.meal?.isAiSuggested ?? false;
+  }
+  
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _ingredientsController.dispose();
+    _caloriesController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.meal == null ? 'Add ${widget.mealType.capitalize()}' : 'Edit Meal'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                labelText: 'Meal Title',
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _ingredientsController,
+              decoration: const InputDecoration(
+                labelText: 'Ingredients (comma separated)',
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _caloriesController,
+              decoration: const InputDecoration(
+                labelText: 'Calories',
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            // Validate input
+            if (_titleController.text.isEmpty ||
+                _ingredientsController.text.isEmpty ||
+                _caloriesController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please fill all fields')),
+              );
+              return;
+            }
+            
+            // Create meal object
+            final Meal meal = Meal(
+              id: widget.meal?.id ?? '${widget.mealType}-${DateTime.now().millisecondsSinceEpoch}',
+              title: _titleController.text,
+              mealType: widget.mealType,
+              ingredients: _ingredientsController.text.split(',').map((e) => e.trim()).toList(),
+              calories: int.tryParse(_caloriesController.text) ?? 0,
+              isAiSuggested: _isAiSuggestion,
+              wasFollowed: widget.meal?.wasFollowed ?? false,
+            );
+            
+            Navigator.of(context).pop(meal);
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+
+// Extension for string capitalization
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+}
