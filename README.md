@@ -68,9 +68,9 @@ Documentation is often overlooked or hastily created, leading to confusion for n
 
 The application follows a modern Flutter architecture with the following components:
 
-```
+![image](https://github.com/user-attachments/assets/92741ef2-c370-4b01-aa55-fb14692ffd1a)
+*Architecture Diagram for Our System*
 
-```
 
 ## 🧪 Installation & Usage
 
