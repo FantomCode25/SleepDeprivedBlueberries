@@ -18,8 +18,35 @@ Ever picked up a food product and wondered what "Propyl Gallate" is or if "Potas
 ❗ Problem Statement
 Documentation is often overlooked or hastily created, leading to confusion for new users and contributors. A well-structured README is essential for project adoption and collaboration, yet many developers struggle to create one that effectively communicates all necessary information.
 
-✅ Solution Overview
-Explain your proposed solution. How does your project address the problem? Highlight key features. Attach screenshots if required.
+# SleepDeprivedBlueberries
+
+A Flutter app that turns confusing food labels into clear, personalized nutrition guidance.
+
+---
+
+## Solution Overview
+
+- **Snap & Decode**  
+  Camera + ML Kit OCR reads labels; Gemini 2.5 explains ingredients and shows a health score.  
+- **AI Meal Planner**  
+  Personalized recipes and calendar‑synced reminders based on your dietary profile.  
+- **Real‑Time Alerts**  
+  Push notifications for missed meals or risky additives; wearable integration updates your calorie budget.
+
+---
+
+## Tech Stack
+
+- **Flutter** (UI, image picker, chat, charts)  
+- **Google ML Kit** (OCR & scoring)  
+- **Gemini 2.5** (ingredient parsing & recommendations)  
+- **Firebase** (Realtime Database & Cloud Messaging)  
+- **Integrations**: Google Calendar API, Google Fit, Apple HealthKit
+
+---
+
+> Makes labels understandable, plans meals around you, and keeps you on track—no guesswork.  
+
 
 🛠️ Tech Stack
 Frontend: e.g., React, Vue, Flutter
