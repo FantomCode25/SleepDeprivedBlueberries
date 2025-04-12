@@ -35,43 +35,127 @@ A Flutter app that turns confusing food labels into clear, personalized nutritio
 
 ---
 
+# MockApp
+
+A modern Flutter application with Firebase integration, AI capabilities, and advanced features.
+
 ## Tech Stack
 
-- **Flutter** (UI, image picker, chat, charts)  
-- **Google ML Kit** (OCR & scoring)  
-- **Gemini 2.5** (ingredient parsing & recommendations)  
-- **Firebase** (Realtime Database & Cloud Messaging)  
-- **Integrations**: Google Calendar API, Google Fit, Apple HealthKit
+**Frontend:**
+- Flutter (Dart)
+- Material Design
+- Google Fonts
+- Custom UI Components
 
----
+**Backend:**
+- Firebase Authentication
+- Cloud Firestore
+- Google Cloud Services
 
-> Makes labels understandable, plans meals around you, and keeps you on track—no guesswork.  
+**Database:**
+- Cloud Firestore (NoSQL)
+
+**APIs / Libraries:**
+- Google ML Kit (Text Recognition)
+- Google Generative AI (Gemini)
+- HTTP Client
+- Image Picker
+- Table Calendar
+- Markdown Support
+- Chat Interface (dash_chat_2)
+
+**Tools:**
+- Flutter SDK
+- Firebase CLI
+- Android Studio / Xcode
+- VS Code
+- Flutter DevTools
+- GitHub Actions (for CI/CD)
+
+## 🧩 Architecture
+
+The application follows a modern Flutter architecture with the following components:
 
 
-🛠️ Tech Stack
-Frontend: e.g., React, Vue, Flutter
-Backend: e.g., Node.js, Django, Firebase
-Database: e.g., MongoDB, PostgreSQL
-APIs / Libraries: e.g., OpenAI, Google Maps API, TensorFlow
-Tools: e.g., Docker, GitHub Actions, Figma
-🧩 Architecture / Diagram (if any)
-🧪 Installation & Usage
-Prerequisites
-Node.js / Python / other
-Dependencies listed in package.json or requirements.txt
-Steps
-# Clone the repository
+```
+
+## 🧪 Installation & Usage
+
+### Prerequisites
+- Flutter SDK (^3.7.2)
+- Dart SDK
+- Firebase CLI
+- Android Studio / Xcode (for mobile development)
+- VS Code / Android Studio (for development)
+
+### Dependencies
+All dependencies are listed in `pubspec.yaml`:
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.7
+  google_fonts: ^6.2.1
+  percent_indicator: ^4.2.3
+  firebase_core: ^2.24.0
+  firebase_auth: ^4.11.0
+  cloud_firestore: ^4.9.1
+  google_mlkit_text_recognition: ^0.11.0
+  image_picker: ^1.1.2
+  image: ^4.0.12
+  path: ^1.9.0
+  path_provider: ^2.1.2
+  http: ^1.1.0
+  flutter_dotenv: ^5.0.2
+  table_calendar: ^3.0.9
+  flutter_markdown: ^0.7.1
+  dash_chat_2: ^0.0.21
+  google_generative_ai: ^0.4.6
+```
+
+### Steps
+
+1. Clone the repository:
+```bash
 git clone https://github.com/your-repo-url.git
+```
 
-# Navigate into the project directory
-cd your-project
+2. Navigate into the project directory:
+```bash
+cd mockapp
+```
 
-# Install dependencies
-npm install
+3. Install dependencies:
+```bash
+flutter pub get
+```
 
-# Start the development server
-npm start
+4. Configure Firebase:
+   - Create a Firebase project
+   - Add Android/iOS apps to your Firebase project
+   - Download and add configuration files:
+     - Android: `google-services.json`
+     - iOS: `GoogleService-Info.plist`
+   - Configure environment variables in `.env` file
 
-_Include system architecture, data flow diagrams, or UI wireframes if available._
+5. Start the development server:
+```bash
+flutter run
+```
 
-> 📌 **Tip:** You can add an image like this:
+## 📌 Project Structure
+```
+mockapp/
+├── lib/              # Main application code
+│   ├── main.dart     # Application entry point
+│   ├── screens/      # UI screens
+│   ├── widgets/      # Reusable widgets
+│   ├── services/     # Business logic and services
+│   ├── models/       # Data models
+│   └── utils/        # Utility functions
+├── assets/           # Static assets
+│   └── launch.gif    # Launch screen animation
+├── pubspec.yaml      # Project dependencies
+└── README.md         # Project documentation
+```
+
