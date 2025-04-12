@@ -2,7 +2,7 @@
 🚀 Project NutriPal
 
 **Team Name:** SleepDeprivedBlueberries  
-**Hackathon:** Hackathon Name & Edition  
+**Hackathon:** FantomCode '25  
 **Date:** 12/04/2025
 
 # 📖 Table of Contents
