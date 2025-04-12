@@ -4,7 +4,7 @@ Team Name: SleepDeprivedBlueberries
 Hackathon: Hackathon Name & Edition
 Date: 12/04/2025
 
-📖 Table of Contents
+#📖 Table of Contents
 Introduction
 Problem Statement
 Solution Overview
@@ -13,9 +13,9 @@ Architecture / Diagram (if any)
 Installation & Usage
 Team Members
 
-🧠 Introduction
+#🧠 Introduction
 Ever picked up a food product and wondered what "Propyl Gallate" is or if "Potassium Bromate" is safe? NutriScan is your personal food detective. Our mobile app uses OCR and AI to instantly analyze meals, explain ingredients in plain English, and tailor suggestions based on your allergies, fitness goals, and medical needs. It’s designed for health-conscious users, fitness enthusiasts, and anyone tired of decoding food labels.
-❗ Problem Statement
+#❗ Problem Statement
 Documentation is often overlooked or hastily created, leading to confusion for new users and contributors. A well-structured README is essential for project adoption and collaboration, yet many developers struggle to create one that effectively communicates all necessary information.
 
 # SleepDeprivedBlueberries
@@ -35,7 +35,7 @@ A Flutter app that turns confusing food labels into clear, personalized nutritio
 
 ---
 
-# MockApp
+# App
 
 A modern Flutter application with Firebase integration, AI capabilities, and advanced features.
 
