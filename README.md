@@ -14,6 +14,8 @@
 - [Installation & Usage](#installation--usage)
 - [Team Members](#team-members)
 
+![image](https://github.com/user-attachments/assets/d2ec13ce-c35c-4ff4-8b99-65b2e95f0c37)
+
 # 🧠 Introduction
 Ever picked up a food product and wondered what "Propyl Gallate" is or if "Potassium Bromate" is safe? NutriScan is your personal food detective. Our mobile app uses OCR and AI to instantly analyze meals, explain ingredients in plain English, and tailor suggestions based on your allergies, fitness goals, and medical needs. It's designed for health-conscious users, fitness enthusiasts, and anyone tired of decoding food labels.
 
