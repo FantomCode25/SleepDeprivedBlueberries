@@ -1,45 +1,37 @@
 # SleepDeprivedBlueberries
 🚀 Project NutriPal
-Team Name: SleepDeprivedBlueberries
-Hackathon: Hackathon Name & Edition
-Date: 12/04/2025
 
-#📖 Table of Contents
-Introduction
-Problem Statement
-Solution Overview
-Tech Stack
-Architecture / Diagram (if any)
-Installation & Usage
-Team Members
+**Team Name:** SleepDeprivedBlueberries  
+**Hackathon:** Hackathon Name & Edition  
+**Date:** 12/04/2025
 
-#🧠 Introduction
-Ever picked up a food product and wondered what "Propyl Gallate" is or if "Potassium Bromate" is safe? NutriScan is your personal food detective. Our mobile app uses OCR and AI to instantly analyze meals, explain ingredients in plain English, and tailor suggestions based on your allergies, fitness goals, and medical needs. It’s designed for health-conscious users, fitness enthusiasts, and anyone tired of decoding food labels.
-#❗ Problem Statement
+# 📖 Table of Contents
+- [Introduction](#introduction)
+- [Problem Statement](#problem-statement)
+- [Solution Overview](#solution-overview)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Installation & Usage](#installation--usage)
+- [Team Members](#team-members)
+
+# 🧠 Introduction
+Ever picked up a food product and wondered what "Propyl Gallate" is or if "Potassium Bromate" is safe? NutriScan is your personal food detective. Our mobile app uses OCR and AI to instantly analyze meals, explain ingredients in plain English, and tailor suggestions based on your allergies, fitness goals, and medical needs. It's designed for health-conscious users, fitness enthusiasts, and anyone tired of decoding food labels.
+
+# ❗ Problem Statement
 Documentation is often overlooked or hastily created, leading to confusion for new users and contributors. A well-structured README is essential for project adoption and collaboration, yet many developers struggle to create one that effectively communicates all necessary information.
 
-# SleepDeprivedBlueberries
-
-A Flutter app that turns confusing food labels into clear, personalized nutrition guidance.
-
----
-
-## Solution Overview
+# 💡 Solution Overview
 
 - **Snap & Decode**  
-  Camera + ML Kit OCR reads labels; Gemini 2.5 explains ingredients and shows a health score.  
+  Camera + ML Kit OCR reads labels; Gemini 2.5 explains ingredients and shows a health score.
+  
 - **AI Meal Planner**  
-  Personalized recipes and calendar‑synced reminders based on your dietary profile.  
+  Personalized recipes and calendar‑synced reminders based on your dietary profile.
+  
 - **Real‑Time Alerts**  
   Push notifications for missed meals or risky additives; wearable integration updates your calorie budget.
 
----
-
-# App
-
-A modern Flutter application with Firebase integration, AI capabilities, and advanced features.
-
-## Tech Stack
+# 🛠️ Tech Stack
 
 **Frontend:**
 - Flutter (Dart)
@@ -76,7 +68,22 @@ A modern Flutter application with Firebase integration, AI capabilities, and adv
 
 The application follows a modern Flutter architecture with the following components:
 
-
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│                 │     │                 │     │                 │
+│  Flutter UI     │────▶│  Firebase       │────▶│  Cloud          │
+│  (Frontend)     │     │  Services       │     │  Services       │
+│                 │     │                 │     │                 │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+        │                       │                       │
+        │                       │                       │
+        ▼                       ▼                       ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│                 │     │                 │     │                 │
+│  Local          │     │  Authentication │     │  ML/AI          │
+│  Storage        │     │  & Database     │     │  Services       │
+│                 │     │                 │     │                 │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
 ## 🧪 Installation & Usage
@@ -159,3 +166,14 @@ mockapp/
 └── README.md         # Project documentation
 ```
 
+> 📌 **Tip:** For development, you can use the Flutter DevTools for debugging and performance monitoring.
+
+# 👥 Team Members
+- Lahari R
+- Madhubala M  
+- Kushagra Awasthi
+- L V S Aditya
+
+---
+
+Made with ❤️ by SleepDeprivedBlueberries
