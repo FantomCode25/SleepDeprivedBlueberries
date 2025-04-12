@@ -32,6 +32,19 @@ Documentation is often overlooked or hastily created, leading to confusion for n
   
 - **Real‑Time Alerts**  
   Push notifications for missed meals or risky additives; wearable integration updates your calorie budget.
+![WhatsApp Image 2025-04-12 at 10 27 57_655293cf](https://github.com/user-attachments/assets/63d1b975-315a-4e47-abf8-734e24d2ca1e)
+![WhatsApp Image 2025-04-12 at 10 27 57_84c8157f](https://github.com/user-attachments/assets/37c72197-6856-45fb-a092-a6fa9deb0056)
+![WhatsApp Image 2025-04-12 at 10 27 58_f14bd40a](https://github.com/user-attachments/assets/27e8afa1-8a41-4598-9840-24f1ed685bfd)
+![WhatsApp Image 2025-04-12 at 10 27 58_b423e0f6](https://github.com/user-attachments/assets/af9dc649-5ba8-4272-accc-d176e5efda0a)
+![WhatsApp Image 2025-04-12 at 10 27 58_b94df0c2](https://github.com/user-attachments/assets/e954ff58-5032-4e9c-bd75-31b532380008)
+![WhatsApp Image 2025-04-12 at 10 27 59_7f1561f8](https://github.com/user-attachments/assets/c751955a-6bc0-445b-81be-bd2f47351a38)
+![WhatsApp Image 2025-04-12 at 10 27 59_95249e76](https://github.com/user-attachments/assets/8c77be84-bc90-492a-bc96-bc2ee728959c)
+
+
+
+
+
+
 
 # 🛠️ Tech Stack
 
